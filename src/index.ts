@@ -32,5 +32,6 @@ app.get("/alive", (req, res) => {
 });
 
 app.listen(port, () => {
+  console.log("TESTING");
   console.log(`App listening on port ${port}`);
 });
