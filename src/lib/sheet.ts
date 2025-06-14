@@ -1,8 +1,13 @@
 import { google } from "googleapis";
 import { receiverToCategory } from "./category";
 
+if (!process.env.GOOGLE_CREDENTIALS) {
+  throw new Error("GOOGLE_CREDENTIALS environment variable is not set");
+}
+
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 const auth = new google.auth.GoogleAuth({
-  keyFile: "credentials.json",
+  credentials: credentials,
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 

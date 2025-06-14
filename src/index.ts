@@ -1,10 +1,9 @@
 import express from "express";
 import winston from "winston";
 import helmet from "helmet";
+import "dotenv/config";
 import expressWinston from "express-winston";
 import receiptRouter from "./routes/receipt";
-import "dotenv/config";
-
 const app = express();
 const port = 3456;
 
