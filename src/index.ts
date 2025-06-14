@@ -3,6 +3,7 @@ import winston from "winston";
 import helmet from "helmet";
 import expressWinston from "express-winston";
 import receiptRouter from "./routes/receipt";
+import "dotenv/config";
 
 const app = express();
 const port = 3000;

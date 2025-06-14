@@ -7,7 +7,11 @@ const router = express.Router();
 const receiptUpload = multer({ storage: multer.memoryStorage() });
 
 router.use((req, res, next) => {
-  // TODO IMPLEMENT AUTHENTICATION GUARD
+  const apikey = req.headers["x-api-key"];
+  if (!apikey || apikey !== process.env.API_KEY) {
+    res.status(401).send("Unauthorized access");
+  }
+
   next();
 });
 

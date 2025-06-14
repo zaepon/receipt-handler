@@ -10,7 +10,6 @@ if (MAX_OCR_WORKERS < 1) {
 }
 
 async function scanReceipt(buffer: Buffer) {
-  // Convert pdf to image, store to temp directory and return the path
   const imagePath = await convertPdfToImage(buffer);
 
   const fields = [
@@ -38,7 +37,6 @@ async function scanReceipt(buffer: Buffer) {
   ];
   const result = await scanTextFromImage(imagePath, fields);
 
-  // Clean up the temporary image file
   try {
     await rimraf(path.dirname(imagePath));
   } catch (e) {
