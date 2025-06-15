@@ -18,13 +18,19 @@ export async function convertPdfToImage(pdfBuffer) {
   await fs.mkdir(tempDir, { recursive: true });
 
   const convert = fromBuffer(pdfBuffer, {
-    width: 800,
-    height: 1000,
-    density: 200,
+    preserveAspectRatio: true,
+    density: 300,
+    format: "png",
     savePath: tempDir,
   });
 
   const output = await convert(1);
+
+  //   // store to local directory also to local directory for debug
+  //   const localOutputPath = path.join(process.cwd(), `${reqId}.png`);
+  //   await fs.copyFile(output.path, localOutputPath);
+  //   console.log("Converted PDF to image at:", localOutputPath);
+
   console.log("Converted PDF to image at:", output.path);
   return output.path;
 }
