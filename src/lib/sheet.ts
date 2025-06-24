@@ -16,7 +16,7 @@ export async function appendExpenseRowToSheet(record: Record<string, string>) {
   const sheets = google.sheets({ version: "v4", auth: client });
 
   const spreadsheetId = "1N5G9IGRKguO6_g2yOC4dsBIh0cMK2tlNIej06euHYgU"; // TODO store in env
-  const range = `${getCurrentMonthNameInFinnish()}!J22:M60`;
+  const range = `${getCurrentMonthNameInFinnish()}!J22:M100`;
 
   const res = await sheets.spreadsheets.values.get({
     auth: client,
