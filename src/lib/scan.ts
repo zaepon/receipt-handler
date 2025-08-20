@@ -3,6 +3,7 @@ import { rimraf } from "rimraf";
 import os from "os";
 import { convertPdfToImage } from "./pdf_image_convert";
 import { scanTextFromImage } from "./ocr";
+import crypto from "crypto";
 
 const MAX_OCR_WORKERS = os.cpus().length;
 if (MAX_OCR_WORKERS < 1) {
@@ -17,7 +18,7 @@ async function scanReceipt(buffer: Buffer) {
       name: "saaja",
     },
     {
-      name: "maara",
+      name: "määrä",
       formatter: (value: string) => {
         // Get amount from maaraResult "format is like Maara: 12,34 EUR"
         const amountMatch = value.match(/(\d+,\d{2})/);
@@ -26,12 +27,18 @@ async function scanReceipt(buffer: Buffer) {
       },
     },
     {
-      name: "paivamaara",
+      name: "päivämäärä",
       formatter: (value: string) => {
         // Get date from date row  "format is like Kirjauspaiva: 9.6.2025"
         const dateMatch = value.match(/(\d{1,2}\.\d{1,2}\.\d{4})/);
         const date = dateMatch ? dateMatch[0] : "";
         return date;
+      },
+    },
+    {
+      name: "viitenumero",
+      formatter: (value: string) => {
+        return crypto.createHash("sha256").update(value).digest("hex");
       },
     },
   ];

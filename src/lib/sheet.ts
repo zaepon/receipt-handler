@@ -27,11 +27,17 @@ export async function appendExpenseRowToSheet(record: Record<string, string>) {
   const rows = res.data.values || [];
   const firstEmptyRow = 22 + rows.length;
 
+  const entryExists = expenseExistsInSheet(rows, record);
+  if (entryExists) {
+    console.log("Expense already exists in the sheet, skipping append.");
+    return;
+  }
+
   const recordValues = [
-    record["saaja"],
-    record["paivamaara"],
+    record["saaja"] + ":" + record["viitenumero"],
+    record["päivämäärä"],
     receiverToCategory(record["saaja"]),
-    record["maara"],
+    record["määrä"],
   ];
 
   await sheets.spreadsheets.values.update({
@@ -62,4 +68,20 @@ const getCurrentMonthNameInFinnish = () => {
     "Joulukuu",
   ];
   return monthNames[date.getMonth()];
+};
+
+const expenseExistsInSheet = (
+  data: string[][],
+  record: Record<string, string>
+): boolean => {
+  const expenseKey = `${record["saaja"]}:${record["viitenumero"]}`;
+  const duplicateRow = data.findIndex(
+    (row) => row[0] && row[0].includes(expenseKey)
+  );
+
+  if (duplicateRow !== -1) {
+    return true;
+  }
+
+  return false;
 };

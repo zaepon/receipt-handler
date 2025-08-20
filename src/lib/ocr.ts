@@ -15,7 +15,7 @@ async function getScheduler() {
 
     const workerPromises = Array.from({ length: MAX_OCR_WORKERS }).map(
       async () => {
-        const worker = await createWorker("eng");
+        const worker = await createWorker("fin");
         scheduler.addWorker(worker);
       }
     );
