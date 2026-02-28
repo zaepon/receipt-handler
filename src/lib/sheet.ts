@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { randomUUID } from "crypto";
 import { receiverToCategory } from "./category";
 
 if (!process.env.GOOGLE_CREDENTIALS) {
@@ -27,14 +28,16 @@ export async function appendExpenseRowToSheet(record: Record<string, string>) {
   const rows = res.data.values || [];
   const firstEmptyRow = 22 + rows.length;
 
-  const entryExists = expenseExistsInSheet(rows, record);
+  const referenceNumber = resolveReferenceNumber(record["viitenumero"]);
+
+  const entryExists = expenseExistsInSheet(rows, record, referenceNumber);
   if (entryExists) {
     console.log("Expense already exists in the sheet, skipping append.");
     return;
   }
 
   const recordValues = [
-    record["saaja"] + ":" + record["viitenumero"],
+    record["saaja"] + ":" + referenceNumber,
     record["päivämäärä"],
     receiverToCategory(record["saaja"]),
     record["määrä"],
@@ -72,9 +75,10 @@ const getCurrentMonthNameInFinnish = () => {
 
 const expenseExistsInSheet = (
   data: string[][],
-  record: Record<string, string>
+  record: Record<string, string>,
+  referenceNumber: string
 ): boolean => {
-  const expenseKey = `${record["saaja"]}:${record["viitenumero"]}`;
+  const expenseKey = `${record["saaja"]}:${referenceNumber}`;
   const duplicateRow = data.findIndex(
     (row) => row[0] && row[0].includes(expenseKey)
   );
@@ -84,4 +88,17 @@ const expenseExistsInSheet = (
   }
 
   return false;
+};
+
+const resolveReferenceNumber = (referenceNumber: string | undefined): string => {
+  const normalized = referenceNumber?.trim();
+  if (
+    !normalized ||
+    normalized.toLowerCase() === "undefined" ||
+    normalized.toLowerCase() === "null"
+  ) {
+    return `generated-${randomUUID()}`;
+  }
+
+  return normalized;
 };

@@ -6,10 +6,11 @@ import { appendExpenseRowToSheet } from "../lib/sheet";
 const router = express.Router();
 const receiptUpload = multer({ storage: multer.memoryStorage() });
 
-router.use((req, res, next) => {
+router.use((req, res, next): void => {
   const apikey = req.headers["x-api-key"];
   if (!apikey || apikey !== process.env.API_KEY) {
     res.status(401).send("Unauthorized access");
+    return;
   }
 
   next();
